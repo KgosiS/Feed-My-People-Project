@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, FlatList, StyleSheet, TouchableOpacity,
-  Modal, TextInput, Alert, SafeAreaView
+  Modal, TextInput, Alert, SafeAreaView, Image
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../lib/supabase';
 
 export default function ManageBlogPostsScreen() {
@@ -74,56 +75,62 @@ export default function ManageBlogPostsScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Manage Blog Posts</Text>
-      <FlatList
-        data={posts}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
+    <LinearGradient colors={['#ff7e5f', '#feb47b']} style={styles.gradient}>
+      <SafeAreaView style={styles.container}>
+        
+        <Text style={styles.header}>Manage Blog Posts</Text>
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
 
-      {/* Edit Modal */}
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={styles.modalBackground}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Edit Blog Post</Text>
-            <TextInput
-              value={title}
-              onChangeText={setTitle}
-              placeholder="Title"
-              placeholderTextColor="#888"
-              style={styles.input}
-            />
-            <TextInput
-              value={content}
-              onChangeText={setContent}
-              placeholder="Content"
-              placeholderTextColor="#888"
-              style={[styles.input, { height: 120, textAlignVertical: 'top' }]}
-              multiline
-            />
-            <View style={styles.modalButtons}>
-              <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
-                <Text style={styles.btnText}>Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.cancelBtn}>
-                <Text style={styles.btnText}>Cancel</Text>
-              </TouchableOpacity>
+        {/* Edit Modal */}
+        <Modal visible={modalVisible} animationType="slide" transparent>
+          <View style={styles.modalBackground}>
+            <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Edit Blog Post</Text>
+              <TextInput
+                value={title}
+                onChangeText={setTitle}
+                placeholder="Title"
+                placeholderTextColor="#888"
+                style={styles.input}
+              />
+              <TextInput
+                value={content}
+                onChangeText={setContent}
+                placeholder="Content"
+                placeholderTextColor="#888"
+                style={[styles.input, { height: 120, textAlignVertical: 'top' }]}
+                multiline
+              />
+              <View style={styles.modalButtons}>
+                <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
+                  <Text style={styles.btnText}>Save</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.cancelBtn}>
+                  <Text style={styles.btnText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
-    </SafeAreaView>
+        </Modal>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#006400',
     padding: 16,
   },
+
   header: {
     fontSize: 26,
     fontWeight: 'bold',
@@ -132,12 +139,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   card: {
-    backgroundColor: '#228B22',
+    backgroundColor: 'rgba(255,255,255,0.9)',
     padding: 16,
     borderRadius: 10,
     marginBottom: 12,
     shadowColor: '#000',
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     elevation: 3,
@@ -145,10 +152,10 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: 18,
-    color: '#fff',
+    color: '#333',
   },
   content: {
-    color: '#e0ffe0',
+    color: '#555',
     marginTop: 6,
   },
   actions: {
@@ -157,13 +164,13 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   editBtn: {
-    backgroundColor: '#32CD32',
+    backgroundColor: '#ff7e5f',
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 6,
   },
   deleteBtn: {
-    backgroundColor: '#B22222',
+    backgroundColor: '#ff4d4d',
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 6,
@@ -179,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modal: {
-    backgroundColor: '#006400',
+    backgroundColor: '#fff',
     padding: 24,
     borderRadius: 12,
     width: '85%',
@@ -187,24 +194,26 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#ff7e5f',
     marginBottom: 16,
     textAlign: 'center',
   },
   input: {
-    backgroundColor: '#e0ffe0',
+    backgroundColor: '#f9f9f9',
     color: '#000',
     marginBottom: 12,
     padding: 12,
     borderRadius: 6,
     fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   saveBtn: {
-    backgroundColor: '#32CD32',
+    backgroundColor: '#feb47b',
     padding: 10,
     borderRadius: 6,
     flex: 1,
@@ -212,7 +221,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelBtn: {
-    backgroundColor: '#999',
+    backgroundColor: '#ccc',
     padding: 10,
     borderRadius: 6,
     flex: 1,

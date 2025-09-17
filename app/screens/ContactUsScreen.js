@@ -1,3 +1,4 @@
+// screens/ContactUsScreen.js
 import React, { useState } from 'react';
 import {
   View,
@@ -9,11 +10,13 @@ import {
 } from 'react-native';
 import { supabase } from '../lib/supabase';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ChatBotScreen from './ChatbotScreen';
 
 export default function ContactUsScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [chatVisible, setChatVisible] = useState(false);
 
   const handleSubmit = async () => {
     if (!name || !email || !message) {
@@ -78,6 +81,17 @@ export default function ContactUsScreen() {
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Send Message</Text>
       </TouchableOpacity>
+
+      {/* Floating Chatbot Button */}
+      <TouchableOpacity
+        style={styles.floatingBtn}
+        onPress={() => setChatVisible(true)}
+      >
+        <Icon name="chatbubbles-outline" size={30} color="#fff" />
+      </TouchableOpacity>
+
+      {/* ChatBot Modal */}
+      <ChatBotScreen visible={chatVisible} onClose={() => setChatVisible(false)} />
     </View>
   );
 }
@@ -116,5 +130,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  floatingBtn: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#d35400',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
   },
 });

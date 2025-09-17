@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, FlatList, StyleSheet, Image,
-  TouchableOpacity, ActivityIndicator, ScrollView,
+  View,
+  Text,
+  Image,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { supabase } from '../lib/supabase';
+import ChatBot from './ChatbotScreen'; // ✅ must match default export in ChatBotScreen.js
+import { Ionicons } from '@expo/vector-icons';
 
 export default function EventsScreen() {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [pastEvents, setPastEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [chatVisible, setChatVisible] = useState(false);
 
   const fetchEvents = async () => {
     setLoading(true);
@@ -62,37 +71,50 @@ export default function EventsScreen() {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>Upcoming Events</Text>
-      {loading ? (
-        <ActivityIndicator size="large" color="#FFA500" />
-      ) : upcomingEvents.length > 0 ? (
-        <FlatList
-          data={upcomingEvents}
-          horizontal
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderEventCard}
-          showsHorizontalScrollIndicator={false}
-        />
-      ) : (
-        <Text style={styles.empty}>No upcoming events.</Text>
-      )}
+    <View style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
+        <Text style={styles.header}>Upcoming Events</Text>
+        {loading ? (
+          <ActivityIndicator size="large" color="#FFA500" />
+        ) : upcomingEvents.length > 0 ? (
+          <FlatList
+            data={upcomingEvents}
+            horizontal
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderEventCard}
+            showsHorizontalScrollIndicator={false}
+          />
+        ) : (
+          <Text style={styles.empty}>No upcoming events.</Text>
+        )}
 
-      <Text style={[styles.header, { marginTop: 30 }]}>Past Events</Text>
-      {loading ? (
-        <ActivityIndicator size="small" color="#FF6347" />
-      ) : pastEvents.length > 0 ? (
-        <FlatList
-          data={pastEvents}
-          horizontal
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderEventCard}
-          showsHorizontalScrollIndicator={false}
-        />
-      ) : (
-        <Text style={styles.empty}>No past events yet.</Text>
-      )}
-    </ScrollView>
+        <Text style={[styles.header, { marginTop: 30 }]}>Past Events</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color="#FF6347" />
+        ) : pastEvents.length > 0 ? (
+          <FlatList
+            data={pastEvents}
+            horizontal
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderEventCard}
+            showsHorizontalScrollIndicator={false}
+          />
+        ) : (
+          <Text style={styles.empty}>No past events yet.</Text>
+        )}
+      </ScrollView>
+
+      {/* Floating Chatbot Button */}
+      <TouchableOpacity
+        style={styles.floatingBtn}
+        onPress={() => setChatVisible(true)}
+      >
+        <Ionicons name="chatbubbles-outline" size={30} color="#fff" />
+      </TouchableOpacity>
+
+      {/* ChatBot Modal */}
+      <ChatBot visible={chatVisible} onClose={() => setChatVisible(false)} />
+    </View>
   );
 }
 
@@ -161,5 +183,16 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginLeft: 10,
   },
+  floatingBtn: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#d35400',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+  },
 });
-      

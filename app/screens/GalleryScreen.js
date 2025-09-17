@@ -6,13 +6,16 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
-  Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import { supabase } from '../lib/supabase';
+import ChatBot from './ChatbotScreen'; // make sure this is correct path
+import { Ionicons } from '@expo/vector-icons';
 
 export default function GalleryScreen() {
   const [galleryItems, setGalleryItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [chatVisible, setChatVisible] = useState(false);
 
   const fetchGallery = async () => {
     setLoading(true);
@@ -52,17 +55,27 @@ export default function GalleryScreen() {
       {loading ? (
         <ActivityIndicator size="large" color="#FFA500" />
       ) : (
-      <FlatList
-  key={'2-columns'} // <-- force remount when columns change (or silence warning)
-  data={galleryItems}
-  keyExtractor={(item) => item.id}
-  renderItem={renderItem}
-  numColumns={2}
-  columnWrapperStyle={styles.row}
-  showsVerticalScrollIndicator={false}
-/>
-
+        <FlatList
+          key={'2-columns'}
+          data={galleryItems}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          showsVerticalScrollIndicator={false}
+        />
       )}
+
+      {/* Floating Chatbot Button */}
+      <TouchableOpacity
+        style={styles.floatingBtn}
+        onPress={() => setChatVisible(true)}
+      >
+        <Ionicons name="chatbubbles-outline" size={30} color="#fff" />
+      </TouchableOpacity>
+
+      {/* ChatBot Modal */}
+      <ChatBot visible={chatVisible} onClose={() => setChatVisible(false)} />
     </View>
   );
 }
@@ -105,5 +118,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  floatingBtn: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20, // bottom-right corner
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#d35400',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
   },
 });

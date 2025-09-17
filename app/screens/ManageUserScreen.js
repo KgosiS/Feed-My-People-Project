@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, FlatList, StyleSheet, TouchableOpacity,
-  Modal, TextInput, Alert, Button,
-  SafeAreaView
+  Modal, TextInput, Alert, SafeAreaView
 } from 'react-native';
 import { supabase } from '../lib/supabase';
 
@@ -15,22 +14,20 @@ export default function ManageUsersScreen() {
 
   const fetchUsers = async () => {
     const { data, error } = await supabase.from('profiles').select('id, name, email');
-    if (error) console.error(error);
-    else setUsers(data);
+    if (!error) setUsers(data || []);
+    else console.error(error);
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  useEffect(() => { fetchUsers(); }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     Alert.alert('Confirm Delete', 'Are you sure you want to delete this user?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete', style: 'destructive', onPress: async () => {
           const { error } = await supabase.from('profiles').delete().eq('id', id);
-          if (error) alert('Error deleting user');
-          else fetchUsers();
+          if (!error) fetchUsers();
+          else alert('Error deleting user');
         }
       }
     ]);
@@ -49,18 +46,20 @@ export default function ManageUsersScreen() {
       .update({ name, email })
       .eq('id', selectedUser.id);
 
-    if (error) {
-      alert('Update failed');
-    } else {
+    if (!error) {
       setModalVisible(false);
       fetchUsers();
+    } else {
+      alert('Update failed');
     }
   };
 
   const renderItem = ({ item }) => (
     <View style={styles.userCard}>
-      <Text style={styles.name}>{item.name}</Text>
-      <Text style={styles.email}>{item.email}</Text>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.email}>{item.email}</Text>
+      </View>
       <View style={styles.actions}>
         <TouchableOpacity onPress={() => handleEdit(item)} style={styles.editBtn}>
           <Text style={styles.btnText}>Edit</Text>
@@ -82,7 +81,6 @@ export default function ManageUsersScreen() {
         contentContainerStyle={{ paddingBottom: 20 }}
       />
 
-      {/* Edit Modal */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalBackground}>
           <View style={styles.modal}>
@@ -91,14 +89,14 @@ export default function ManageUsersScreen() {
               value={name}
               onChangeText={setName}
               placeholder="Full Name"
-              placeholderTextColor="#888"
+              placeholderTextColor="#aaa"
               style={styles.input}
             />
             <TextInput
               value={email}
               onChangeText={setEmail}
               placeholder="Email"
-              placeholderTextColor="#888"
+              placeholderTextColor="#aaa"
               style={styles.input}
             />
             <View style={styles.modalButtons}>
@@ -119,23 +117,25 @@ export default function ManageUsersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#006400',
+    backgroundColor: '#fff8e9', // same as welcome
     padding: 16,
   },
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#d35400',
     marginBottom: 20,
     textAlign: 'center',
   },
   userCard: {
-    backgroundColor: '#228B22',
+    backgroundColor: '#ffe1b3',
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 16,
-    borderRadius: 10,
+    borderRadius: 12,
     marginBottom: 12,
     shadowColor: '#000',
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     elevation: 3,
@@ -143,29 +143,28 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#d35400',
   },
   email: {
     fontSize: 14,
-    color: '#e0ffe0',
+    color: '#a65b00',
     marginTop: 4,
   },
   actions: {
     flexDirection: 'row',
-    marginTop: 12,
-    gap: 10,
+    gap: 8,
   },
   editBtn: {
-    backgroundColor: '#32CD32',
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 6,
+    backgroundColor: '#f39c12',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
   },
   deleteBtn: {
-    backgroundColor: '#B22222',
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 6,
+    backgroundColor: '#e74c3c',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
   },
   btnText: {
     color: '#fff',
@@ -173,29 +172,31 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modal: {
-    backgroundColor: '#006400',
+    backgroundColor: '#fff8e9',
     padding: 24,
-    borderRadius: 12,
+    borderRadius: 16,
     width: '85%',
   },
   modalTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#d35400',
     marginBottom: 16,
     textAlign: 'center',
   },
   input: {
-    backgroundColor: '#e0ffe0',
+    backgroundColor: '#fff',
+    borderColor: '#d35400',
+    borderWidth: 1,
     color: '#000',
     marginBottom: 12,
     padding: 12,
-    borderRadius: 6,
+    borderRadius: 8,
     fontSize: 16,
   },
   modalButtons: {
@@ -203,9 +204,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   saveBtn: {
-    backgroundColor: '#32CD32',
+    backgroundColor: '#f39c12',
     padding: 10,
-    borderRadius: 6,
+    borderRadius: 8,
     flex: 1,
     marginRight: 8,
     alignItems: 'center',
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
   cancelBtn: {
     backgroundColor: '#999',
     padding: 10,
-    borderRadius: 6,
+    borderRadius: 8,
     flex: 1,
     marginLeft: 8,
     alignItems: 'center',

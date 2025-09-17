@@ -48,11 +48,15 @@ export default function AdminDashboardScreen({ navigation }) {
       <View style={styles.badgesContainer}>
         <View style={styles.badge}>
           <Icon name="chatbubbles-outline" size={18} color="#fff" />
-          <Text style={styles.badgeText}>{messageCount ?? <ActivityIndicator size="small" color="#fff" />}</Text>
+          <Text style={styles.badgeText}>
+            {messageCount ?? <ActivityIndicator size="small" color="#fff" />}
+          </Text>
         </View>
         <View style={styles.badge}>
           <Icon name="hand-left-outline" size={18} color="#fff" />
-          <Text style={styles.badgeText}>{volunteerCount ?? <ActivityIndicator size="small" color="#fff" />}</Text>
+          <Text style={styles.badgeText}>
+            {volunteerCount ?? <ActivityIndicator size="small" color="#fff" />}
+          </Text>
         </View>
       </View>
 
@@ -63,7 +67,9 @@ export default function AdminDashboardScreen({ navigation }) {
             style={styles.button}
             onPress={() => navigation.navigate(btn.screen)}
           >
-            <Icon name={btn.icon} size={26} color="#228B22" />
+            <View style={styles.iconCircle}>
+              <Icon name={btn.icon} size={26} color="#fff" />
+            </View>
             <Text style={styles.buttonText}>{btn.label}</Text>
           </TouchableOpacity>
         ))}
@@ -75,14 +81,15 @@ export default function AdminDashboardScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#145A00',
+    backgroundColor: '#fff8e9', // warm background
     paddingTop: 40,
   },
   title: {
-    color: '#fff',
-    fontSize: 24,
+    color: '#d35400',
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 10,
   },
   badgesContainer: {
     flexDirection: 'row',
@@ -91,7 +98,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   badge: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: '#d35400',
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 6,
@@ -113,20 +120,29 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#fff',
-    width: '40%',
-    height: 100,
+    width: '42%',
+    height: 120,
     marginBottom: 20,
-    borderRadius: 14,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
     elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  iconCircle: {
+    backgroundColor: '#d35400',
+    borderRadius: 50,
+    padding: 12,
+    marginBottom: 8,
   },
   buttonText: {
-    marginTop: 8,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#000',
+    color: '#d35400',
     fontSize: 14,
   },
 });
